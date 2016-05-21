@@ -1,0 +1,104 @@
+options {
+  STATIC = false ;
+}
+
+PARSER_BEGIN(Parser)
+package javacc;
+public class Parser {
+  public static void main(String[] args) throws ParseException, TokenMgrError {
+    Parser parser;
+
+    if(args.length == 0) {
+      System.out.println("Parser: Reading from standard input... ");
+      parser = new Parser(System.in);
+    }
+    else if(args.length == 1) {
+      System.out.println("Parser: Reading from file "+args[0]+"...");
+      try {
+        parser = new Parser(new java.io.FileInputStream(args[0]));
+      } catch(java.io.FileNotFoundException e) {
+        System.out.println("Parser: File "+args[0]+" not found.");
+        return;
+      }
+    }
+else {
+      System.out.println("Parser: Usage is one of:");
+      System.out.println("  java Parser < inputfile");
+      System.out.println("OR");
+      System.out.println("  java Scanner inputfile");
+      return;
+    }
+    try {
+      parser.Start();
+      System.out.println("");
+      System.out.println("Parser: Program parsed successfully.");
+    } catch(ParseException e){
+      System.out.println("Parser: Encountered errors on parsing.");
+      e.printStackTrace();
+    }
+  }
+}
+PARSER_END(Parser)
+SKIP : { " " | "\n" | "\r" | "\r\n" }
+TOKEN : { < POINTS : ":" > }
+TOKEN : { < SEMICOLON : ";" > }
+TOKEN : { < PLUS : "+" >}
+TOKEN : { < COMMA : "," >}
+TOKEN : { < OPPAREN : "(" >}
+TOKEN : { < CLSPAREN : ")" >}
+TOKEN : { < FUNCTION : "function" > }
+TOKEN : { < INTEGER : "integer" > }
+TOKEN : { < STRING : "string" > }
+TOKEN : { < REAL : "real" > }
+TOKEN : { < VAR : "var" > }
+TOKEN : { < ENDVAR : "endvar" > }
+TOKEN : { < CODE : "code" > }
+TOKEN : { < ENDCODE : "endcode" > }
+TOKEN : { < IS : "is" > }
+TOKEN : { < RETURN : "return" > }
+TOKEN : { < IDENT : (< LETTER >|"$"|"_")(< LETTER >|< DIGITS >|"$"|"_")* > }
+TOKEN : { < #LETTER : ["a"-"z","A"-"Z"] > }
+TOKEN : { < #DIGITS : (["0"-"9"])+ > }
+TOKEN : { < VLSTRING : "'"~["'"]"'" > }
+TOKEN : { < VLNUM : <DIGITS> > }
+TOKEN : {  <  FLOAT : <DIGITS> ("." <DIGITS>)? >}
+
+void val() :
+{}
+{
+  < VLSTRING > (< VLSTRING > | < VLNUM >)*}
+
+void Start() :
+{}
+{
+  (    <FUNCTION> (<IDENT> (<VLNUM> | <IDENT>)*) <OPPAREN> (param())? <CLSPAREN>
+    <POINTS> tips() <IS>
+  scope()
+  )+
+  <EOF>}
+void param() :
+{}
+{
+  (
+    <IDENT> <POINTS> tips() (<COMMA> <IDENT> <POINTS> tips())?  )}
+void tips() :
+{}
+{
+  <INTEGER> | <STRING> | <REAL>}
+void scope() :
+{}
+{
+  varDeclaration() (codeDeclaration())?}
+void varDeclaration() :
+{}
+{
+  <VAR>
+   (   <IDENT> <POINTS> (<INTEGER> <OPPAREN> <VLNUM> <CLSPAREN> <SEMICOLON> |
+   <STRING> <SEMICOLON> |
+    <REAL> <OPPAREN> <FLOAT> <CLSPAREN> <SEMICOLON>)
+ 	)*
+  <ENDVAR>}
+void codeDeclaration() :
+{}
+{
+  <CODE> <RETURN> (<IDENT> (<PLUS> <IDENT>)?) <SEMICOLON> <ENDCODE>}
