@@ -17,43 +17,53 @@ public interface ParserConstants {
   /** RegularExpression Id. */
   int PLUS = 7;
   /** RegularExpression Id. */
-  int COMMA = 8;
+  int MINUS = 8;
   /** RegularExpression Id. */
-  int OPPAREN = 9;
+  int MULT = 9;
   /** RegularExpression Id. */
-  int CLSPAREN = 10;
+  int DIV = 10;
   /** RegularExpression Id. */
-  int FUNCTION = 11;
+  int OPERATION = 11;
   /** RegularExpression Id. */
-  int INTEGER = 12;
+  int COMMA = 12;
   /** RegularExpression Id. */
-  int STRING = 13;
+  int OPPAREN = 13;
   /** RegularExpression Id. */
-  int REAL = 14;
+  int CLSPAREN = 14;
   /** RegularExpression Id. */
-  int VAR = 15;
+  int FUNCTION = 15;
   /** RegularExpression Id. */
-  int ENDVAR = 16;
+  int INTEGER = 16;
   /** RegularExpression Id. */
-  int CODE = 17;
+  int STRING = 17;
   /** RegularExpression Id. */
-  int ENDCODE = 18;
+  int REAL = 18;
   /** RegularExpression Id. */
-  int IS = 19;
+  int DOUBLE = 19;
   /** RegularExpression Id. */
-  int RETURN = 20;
+  int VAR = 20;
   /** RegularExpression Id. */
-  int IDENT = 21;
+  int ENDVAR = 21;
   /** RegularExpression Id. */
-  int LETTER = 22;
+  int CODE = 22;
   /** RegularExpression Id. */
-  int DIGITS = 23;
+  int ENDCODE = 23;
   /** RegularExpression Id. */
-  int VLSTRING = 24;
+  int IS = 24;
   /** RegularExpression Id. */
-  int VLNUM = 25;
+  int RETURN = 25;
   /** RegularExpression Id. */
-  int FLOAT = 26;
+  int IDENT = 26;
+  /** RegularExpression Id. */
+  int LETTER = 27;
+  /** RegularExpression Id. */
+  int DIGITS = 28;
+  /** RegularExpression Id. */
+  int VLSTRING = 29;
+  /** RegularExpression Id. */
+  int VLNUM = 30;
+  /** RegularExpression Id. */
+  int FLOAT = 31;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -68,6 +78,10 @@ public interface ParserConstants {
     "\":\"",
     "\";\"",
     "\"+\"",
+    "\"-\"",
+    "\"*\"",
+    "\"/\"",
+    "<OPERATION>",
     "\",\"",
     "\"(\"",
     "\")\"",
@@ -75,6 +89,7 @@ public interface ParserConstants {
     "\"integer\"",
     "\"string\"",
     "\"real\"",
+    "\"double\"",
     "\"var\"",
     "\"endvar\"",
     "\"code\"",

@@ -43,6 +43,10 @@ PARSER_END(Parser)
 TOKEN : { < POINTS : ":" > }
 TOKEN : { < SEMICOLON : ";" > }
 TOKEN : { < PLUS : "+" >}
+TOKEN : { < MINUS : "-" >}
+TOKEN : { < MULT : "*" >}
+TOKEN : { < DIV : "/" >}
+TOKEN : { < OPERATION : (<PLUS> | <MINUS> | <MULT> | <DIV>) >}
 TOKEN : { < COMMA : "," >}
 TOKEN : { < OPPAREN : "(" >}
 TOKEN : { < CLSPAREN : ")" >}
@@ -50,6 +54,7 @@ TOKEN : { < FUNCTION : "function" > }
 TOKEN : { < INTEGER : "integer" > }
 TOKEN : { < STRING : "string" > }
 TOKEN : { < REAL : "real" > }
+TOKEN : { < DOUBLE : "double" > }
 TOKEN : { < VAR : "var" > }
 TOKEN : { < ENDVAR : "endvar" > }
 TOKEN : { < CODE : "code" > }
@@ -71,34 +76,31 @@ void val() :
 void Start() :
 {}
 {
-  (    <FUNCTION> (<IDENT> (<VLNUM> | <IDENT>)*) <OPPAREN> (param())? <CLSPAREN>
+          <FUNCTION> <IDENT> <OPPAREN> (param())? <CLSPAREN>
     <POINTS> tips() <IS>
-  scope()
-  )+
+    scope()
   <EOF>}
 void param() :
 {}
 {
   (
-    <IDENT> <POINTS> tips() (<COMMA> <IDENT> <POINTS> tips())?  )}
+    <IDENT> <POINTS> tips() (<COMMA> <IDENT> <POINTS> tips())*  )}
 void tips() :
 {}
 {
-  <INTEGER> | <STRING> | <REAL>}
+  <INTEGER> | <STRING> | <REAL> | <DOUBLE>}
 void scope() :
 {}
 {
-  varDeclaration() (codeDeclaration())?}
+  (varDeclaration())? codeDeclaration()}
 void varDeclaration() :
 {}
 {
   <VAR>
-   (   <IDENT> <POINTS> (<INTEGER> <OPPAREN> <VLNUM> <CLSPAREN> <SEMICOLON> |
-   <STRING> <SEMICOLON> |
-    <REAL> <OPPAREN> <FLOAT> <CLSPAREN> <SEMICOLON>)
+   (   <IDENT> <POINTS> tips() (<OPPAREN> (<VLNUM> | <FLOAT>) <CLSPAREN>)? <SEMICOLON>
  	)*
   <ENDVAR>}
 void codeDeclaration() :
 {}
 {
-  <CODE> <RETURN> (<IDENT> (<PLUS> <IDENT>)?) <SEMICOLON> <ENDCODE>}
+  <CODE> <RETURN> <IDENT> (<OPERATION> <IDENT>)* <SEMICOLON> <ENDCODE>}
